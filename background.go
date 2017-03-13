@@ -1,24 +1,38 @@
 package goseq
 
+import (
+	"log"
+)
+
 type Background struct {
 	ch  chan *Event
 	url string
 }
 
-func NewBackground() *Background {
-	return &Background{
-		ch: make(chan *Event),
+func NewBackground(url string) *Background {
+
+	var a = &Background{
+		ch:  make(chan *Event),
+		url: url,
 	}
+
+	go a.initBackground()
+
+	return a
 }
 
-func (b *Background) init_background() {
+func (b *Background) initBackground() {
 
-	var client = &SeqClient{BaseUrl: b.url}
+	var client = &SeqClient{BaseURL: b.url}
 
 	for item := range b.ch {
 		seqlog := SeqLog{
 			Events: []*Event{item},
 		}
-		client.Send(&seqlog, "")
+		success := client.Send(&seqlog, "")
+
+		if success != true {
+			log.Fatal("shit went wrong")
+		}
 	}
 }

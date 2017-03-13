@@ -8,23 +8,24 @@ import (
 )
 
 const (
-	ENDPOINT = "/api/events/raw"
+	endpoint = "/api/events/raw"
 )
 
 type SeqClient struct {
-	BaseUrl string
+	BaseURL string
 }
 
-func (sc *SeqClient) Send(event *SeqLog, api_key string) {
+func (sc *SeqClient) Send(event *SeqLog, api_key string) bool {
 
-	fullUrl := sc.BaseUrl + ENDPOINT
+	fullURL := sc.BaseURL + endpoint
 
 	serialized, _ := json.Marshal(event)
 
-	request, err := http.NewRequest("POST", fullUrl, bytes.NewBuffer(serialized))
+	request, err := http.NewRequest("POST", fullURL, bytes.NewBuffer(serialized))
 
 	if len(api_key) > 1 {
 		request.Header.Set("X-Seq-ApiKey", api_key)
+		request.Header.Set("Content-Type", "application/json")
 	}
 
 	if err != nil {
@@ -36,4 +37,10 @@ func (sc *SeqClient) Send(event *SeqLog, api_key string) {
 	response, err := client.Do(request)
 
 	defer response.Body.Close()
+
+	if response.StatusCode == 201 {
+		return true
+	}
+
+	return false
 }
