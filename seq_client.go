@@ -15,7 +15,7 @@ type SeqClient struct {
 	BaseUrl string
 }
 
-func (sc *SeqClient) Send(event Event, api_key string) {
+func (sc *SeqClient) Send(event *SeqLog, api_key string) {
 
 	fullUrl := sc.BaseUrl + ENDPOINT
 
