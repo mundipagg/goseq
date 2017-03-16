@@ -21,6 +21,8 @@ func (sc *SeqClient) Send(event *SeqLog, api_key string) bool {
 
 	serialized, _ := json.Marshal(event)
 
+	log.Println(string(serialized))
+
 	request, err := http.NewRequest("POST", fullURL, bytes.NewBuffer(serialized))
 
 	if len(api_key) > 1 {

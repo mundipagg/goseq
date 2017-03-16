@@ -19,7 +19,7 @@ func GetLogger(url string) Logger {
 	}
 }
 
-func (l *Logger) log(lvl Level, message string, args map[string]string) {
+func (l *Logger) log(lvl Level, message string, props properties) {
 
 	if l.DefinedLevel != VERBOSE && l.DefinedLevel != lvl {
 		return
@@ -27,7 +27,7 @@ func (l *Logger) log(lvl Level, message string, args map[string]string) {
 
 	entry := &Event{
 		Level:           lvl.String(),
-		Properties:      args,
+		Properties:      props.Property,
 		Timestamp:       time.Now().Format("2006-01-02T15:04:05"),
 		MessageTemplate: message,
 	}
@@ -36,22 +36,22 @@ func (l *Logger) log(lvl Level, message string, args map[string]string) {
 
 }
 
-func (l *Logger) Debug(message string, args map[string]string) {
-	l.log(DEBUG, message, args)
+func (l *Logger) Debug(message string, props properties) {
+	l.log(DEBUG, message, props)
 }
 
-func (l *Logger) Error(message string, args map[string]string) {
-	l.log(ERROR, message, args)
+func (l *Logger) Error(message string, props properties) {
+	l.log(ERROR, message, props)
 }
 
-func (l *Logger) Warning(message string, args map[string]string) {
-	l.log(WARNING, message, args)
+func (l *Logger) Warning(message string, props properties) {
+	l.log(WARNING, message, props)
 }
 
-func (l *Logger) Fatal(message string, args map[string]string) {
-	l.log(FATAL, message, args)
+func (l *Logger) Fatal(message string, props properties) {
+	l.log(FATAL, message, props)
 }
 
-func (l *Logger) Information(message string, args map[string]string) {
-	l.log(INFORMATION, message, args)
+func (l *Logger) Information(message string, props properties) {
+	l.log(INFORMATION, message, props)
 }
