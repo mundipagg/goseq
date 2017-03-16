@@ -25,7 +25,7 @@ func TestLogger_INFORMATION(t *testing.T) {
 
 	logger := GetLogger("http://localhost:5341")
 
-	logger.Information("Logging test message", nil)
+	logger.Information("Logging test message", NewProperties())
 
 	time.Sleep(100 * time.Millisecond)
 
