@@ -4,11 +4,13 @@ import (
 	"log"
 )
 
+// Background represents a background channel that is used to send log messages to the SEQ API
 type Background struct {
 	ch  chan *Event
 	url string
 }
 
+// NewBackground creates a new Background structure and creates a new Go Routine for the initBackground function
 func NewBackground(url string) *Background {
 
 	var a = &Background{
@@ -21,6 +23,7 @@ func NewBackground(url string) *Background {
 	return a
 }
 
+// Background function that is responsable for sending log messages to the SEQ API
 func (b *Background) initBackground() {
 
 	var client = &SeqClient{BaseURL: b.url}

@@ -1,5 +1,6 @@
 package goseq
 
+// Level represents the log level
 type Level int
 
 const (

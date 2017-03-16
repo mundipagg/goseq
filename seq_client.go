@@ -11,11 +11,13 @@ const (
 	endpoint = "/api/events/raw"
 )
 
+// SeqClient holds the Send methods and SEQ BaseURL
 type SeqClient struct {
 	BaseURL string
 }
 
-func (sc *SeqClient) Send(event *SeqLog, api_key string) bool {
+// Send send POST requests to the SEQ API
+func (sc *SeqClient) Send(event *SeqLog, apiKey string) bool {
 
 	fullURL := sc.BaseURL + endpoint
 
@@ -25,8 +27,8 @@ func (sc *SeqClient) Send(event *SeqLog, api_key string) bool {
 
 	request, err := http.NewRequest("POST", fullURL, bytes.NewBuffer(serialized))
 
-	if len(api_key) > 1 {
-		request.Header.Set("X-Seq-ApiKey", api_key)
+	if len(apiKey) > 1 {
+		request.Header.Set("X-Seq-ApiKey", apiKey)
 		request.Header.Set("Content-Type", "application/json")
 	}
 

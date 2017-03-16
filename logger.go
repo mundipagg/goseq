@@ -4,16 +4,18 @@ import (
 	"time"
 )
 
+// Logger is the main struct that will be used to create logs
 type Logger struct {
 	DefinedLevel Level
 	background   *Background
 
-	base_url string
+	baseURL string
 }
 
+// GetLogger create and returns a new Logger struct with a Background struct ready to send log messages
 func GetLogger(url string) Logger {
 	return Logger{
-		base_url:     url,
+		baseURL:      url,
 		background:   NewBackground(url),
 		DefinedLevel: 0,
 	}
@@ -36,22 +38,27 @@ func (l *Logger) log(lvl Level, message string, props properties) {
 
 }
 
+// Debug log messages with DEBUG level
 func (l *Logger) Debug(message string, props properties) {
 	l.log(DEBUG, message, props)
 }
 
+// Error log messages with ERROR level
 func (l *Logger) Error(message string, props properties) {
 	l.log(ERROR, message, props)
 }
 
+// Warning log messages with WARNING level
 func (l *Logger) Warning(message string, props properties) {
 	l.log(WARNING, message, props)
 }
 
+// Fatal log messages with FATAL level
 func (l *Logger) Fatal(message string, props properties) {
 	l.log(FATAL, message, props)
 }
 
+// Information log messages with INFORMATION level
 func (l *Logger) Information(message string, props properties) {
 	l.log(INFORMATION, message, props)
 }
