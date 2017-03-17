@@ -19,7 +19,7 @@ Modern structured logging bridges the gap between human-friendly text logs, and 
 ```go
 package goseq
 
-// http://localhost:5341/
+// SEQ URL http://localhost:5341/
 
 import (
 	"testing"
@@ -28,13 +28,27 @@ import (
 
 func TestLogger_INFORMATION(t *testing.T) {
 
+	// Creates a new logger instance that will be used to send log messages to SEQ API
 	logger := GetLogger("http://localhost:5341")
 
+	// Logs message with INFORMATION log level and empty properties
 	logger.Information("Logging test message", NewProperties())
-
-	time.Sleep(100 * time.Millisecond)
-
+	
+	// Closes logger inner channel and end the Go Routine responsably for logging messages.
+	// Close MUST always be called at the end of the application to avoid loosing log messages
 	logger.Close()
 
 }
 ```
+
+## Installing
+
+### Use *go get*
+
+    $ go get github.com/mundipagg/goseq
+
+Its source will be in:
+
+    $GOPATH/src/pkg/github.com/mundipagg/goseq
+
+You can use `go get -u` to update the package.
