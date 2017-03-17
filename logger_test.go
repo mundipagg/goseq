@@ -13,6 +13,8 @@ func TestLogger_INFORMATION(t *testing.T) {
 
 	logger.Information("Logging test message", NewProperties())
 
+	logger.Close()
+
 }
 
 func TestLogger_WARNING(t *testing.T) {
@@ -20,6 +22,8 @@ func TestLogger_WARNING(t *testing.T) {
 	logger, _ := GetLogger("http://localhost:5341")
 
 	logger.Warning("Logging test message", NewProperties())
+
+	logger.Close()
 
 }
 
@@ -34,6 +38,8 @@ func TestLogger_WithArgs(t *testing.T) {
 
 	logger.Warning("Message with args", props)
 
+	logger.Close()
+
 }
 
 func BenchmarkLogger_WithArgs_100times(b *testing.B) {
@@ -44,8 +50,9 @@ func BenchmarkLogger_WithArgs_100times(b *testing.B) {
 	props.AddProperty("GUID", "11AE3484-9CD4-4332-98B1-145AAEBEACAB")
 	props.AddProperty("String", "SEQ")
 	props.AddProperty("Key", "Value")
+	props.AddProperty("Um", "Dois")
 
-	for index := 0; index < 100; index++ {
+	for index := 0; index < b.N; index++ {
 		logger.Warning(fmt.Sprintf("Message with args %d", index), props)
 	}
 
@@ -63,6 +70,7 @@ func TestLogger_URLError(t *testing.T) {
 
 }
 
+// TestLogger_URLError_Fail tests if even if passing a empty URL the validation fails
 func TestLogger_URLError_Fail(t *testing.T) {
 
 	_, err := GetLogger("")
