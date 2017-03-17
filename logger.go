@@ -1,6 +1,7 @@
 package goseq
 
 import (
+	"errors"
 	"time"
 )
 
@@ -14,13 +15,18 @@ type Logger struct {
 }
 
 // GetLogger create and returns a new Logger struct with a Background struct ready to send log messages
-func GetLogger(url string) Logger {
-	return Logger{
+func GetLogger(url string) (*Logger, error) {
+
+	if len(url) < 1 {
+		return nil, errors.New("Invalid URL")
+	}
+
+	return &Logger{
 		baseURL:      url,
 		background:   NewBackground(url),
 		DefinedLevel: 0,
 		Properties:   NewProperties(),
-	}
+	}, nil
 }
 
 // Close closes the logger background routine
