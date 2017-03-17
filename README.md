@@ -14,7 +14,7 @@ Seq is the fastest way for development teams to carry the benefits of structured
 Modern structured logging bridges the gap between human-friendly text logs, and machine-readable formats like JSON. Using event data from libraries such as Serilog, ASP.NET Core, and Node.js, Seq makes centralized logs easy to read, and easy to filter and correlate, without fragile log parsing.
 
 
-## Exemples
+## Examples
 
 ```go
 package goseq
