@@ -2,12 +2,15 @@ package goseq
 
 import (
 	"log"
+	"sync"
 )
 
 // Background represents a background channel that is used to send log messages to the SEQ API
 type Background struct {
 	ch  chan *Event
 	url string
+
+	wg sync.WaitGroup
 }
 
 // NewBackground creates a new Background structure and creates a new Go Routine for the initBackground function
@@ -17,6 +20,8 @@ func NewBackground(url string) *Background {
 		ch:  make(chan *Event),
 		url: url,
 	}
+
+	a.wg.Add(1)
 
 	go a.initBackground()
 
@@ -28,6 +33,8 @@ func (b *Background) initBackground() {
 
 	var client = &SeqClient{BaseURL: b.url}
 
+	defer b.wg.Done()
+
 	for item := range b.ch {
 		seqlog := SeqLog{
 			Events: []*Event{item},
@@ -38,4 +45,12 @@ func (b *Background) initBackground() {
 			log.Fatal("shit went wrong")
 		}
 	}
+}
+
+// Close closes background channel and waits for the end of the go Routine
+func (b *Background) Close() {
+
+	close(b.ch)
+
+	b.wg.Wait()
 }

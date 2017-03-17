@@ -8,6 +8,7 @@ import (
 type Logger struct {
 	DefinedLevel Level
 	background   *Background
+	Properties   properties
 
 	baseURL string
 }
@@ -18,7 +19,13 @@ func GetLogger(url string) Logger {
 		baseURL:      url,
 		background:   NewBackground(url),
 		DefinedLevel: 0,
+		Properties:   NewProperties(),
 	}
+}
+
+// Close closes the logger background routine
+func (l *Logger) Close() {
+	l.background.Close()
 }
 
 func (l *Logger) log(lvl Level, message string, props properties) {

@@ -32,7 +32,7 @@ func TestLogger_WithArgs(t *testing.T) {
 	props.AddProperty("String", "SEQ")
 	props.AddProperty("Key", "Value")
 
-	logger.Warning("Message with arrgs", props)
+	logger.Warning("Message with args", props)
 
 }
 
@@ -46,7 +46,9 @@ func TestLogger_WithArgs_1000times(t *testing.T) {
 	props.AddProperty("Key", "Value")
 
 	for index := 0; index < 1000; index++ {
-		logger.Warning(fmt.Sprintf("Message with arrgs %d", index), props)
+		logger.Warning(fmt.Sprintf("Message with args %d", index), props)
 	}
+
+	logger.Close()
 
 }
