@@ -15,7 +15,7 @@ type Logger struct {
 }
 
 // GetLogger create and returns a new Logger struct with a Background struct ready to send log messages
-func GetLogger(url string) (*Logger, error) {
+func GetLogger(url string, apiKey string) (*Logger, error) {
 
 	if len(url) < 1 {
 		return nil, errors.New("Invalid URL")
@@ -23,7 +23,7 @@ func GetLogger(url string) (*Logger, error) {
 
 	return &Logger{
 		baseURL:      url,
-		background:   NewBackground(url),
+		background:   NewBackground(url, apiKey),
 		DefinedLevel: 0,
 		Properties:   NewProperties(),
 	}, nil

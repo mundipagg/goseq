@@ -7,18 +7,20 @@ import (
 
 // Background represents a background channel that is used to send log messages to the SEQ API
 type Background struct {
-	ch  chan *Event
-	url string
+	ch     chan *Event
+	url    string
+	apiKey string
 
 	wg sync.WaitGroup
 }
 
 // NewBackground creates a new Background structure and creates a new Go Routine for the initBackground function
-func NewBackground(url string) *Background {
+func NewBackground(url string, apiKey string) *Background {
 
 	var a = &Background{
-		ch:  make(chan *Event),
-		url: url,
+		ch:     make(chan *Event),
+		url:    url,
+		apiKey: apiKey,
 	}
 
 	a.wg.Add(1)
@@ -39,7 +41,7 @@ func (b *Background) initBackground() {
 		seqlog := SeqLog{
 			Events: []*Event{item},
 		}
-		success := client.Send(&seqlog, "")
+		success := client.Send(&seqlog, b.apiKey)
 
 		if success != true {
 			log.Fatal("shit went wrong")

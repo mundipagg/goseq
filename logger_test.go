@@ -7,9 +7,11 @@ import (
 	"testing"
 )
 
+var baseURL = "http://localhost:5341"
+
 func TestLogger_INFORMATION(t *testing.T) {
 
-	logger, _ := GetLogger("http://localhost:5341")
+	logger, _ := GetLogger(baseURL, "")
 
 	logger.Information("Logging test message", NewProperties())
 
@@ -19,7 +21,7 @@ func TestLogger_INFORMATION(t *testing.T) {
 
 func TestLogger_WARNING(t *testing.T) {
 
-	logger, _ := GetLogger("http://localhost:5341")
+	logger, _ := GetLogger(baseURL, "")
 
 	logger.Warning("Logging test message", NewProperties())
 
@@ -29,7 +31,7 @@ func TestLogger_WARNING(t *testing.T) {
 
 func TestLogger_WithArgs(t *testing.T) {
 
-	logger, _ := GetLogger("http://localhost:5341")
+	logger, _ := GetLogger(baseURL, "")
 
 	var props = NewProperties()
 	props.AddProperty("GUID", "11AE3484-9CD4-4332-98B1-145AAEBEACAB")
@@ -44,7 +46,7 @@ func TestLogger_WithArgs(t *testing.T) {
 
 func BenchmarkLogger_WithArgs_100times(b *testing.B) {
 
-	logger, _ := GetLogger("http://localhost:5341")
+	logger, _ := GetLogger(baseURL, "")
 
 	var props = NewProperties()
 	props.AddProperty("GUID", "11AE3484-9CD4-4332-98B1-145AAEBEACAB")
@@ -62,7 +64,7 @@ func BenchmarkLogger_WithArgs_100times(b *testing.B) {
 
 func TestLogger_URLError(t *testing.T) {
 
-	_, err := GetLogger("")
+	_, err := GetLogger("", "")
 
 	if err != nil {
 		t.Log("Worked")
@@ -73,9 +75,24 @@ func TestLogger_URLError(t *testing.T) {
 // TestLogger_URLError_Fail tests if even if passing a empty URL the validation fails
 func TestLogger_URLError_Fail(t *testing.T) {
 
-	_, err := GetLogger("")
+	_, err := GetLogger("", "")
 
 	if err == nil {
 		t.FailNow()
 	}
+}
+
+func TestLogger_WithAPIKey(t *testing.T) {
+
+	logger, _ := GetLogger(baseURL, "UWL08yUfTyw4FgXbSR")
+
+	var props = NewProperties()
+	props.AddProperty("GUID", "11AE3484-9CD4-4332-98B1-145AAEBEACAB")
+	props.AddProperty("String", "SEQ")
+	props.AddProperty("Key", "Value")
+
+	logger.Warning("Message with APIKEY", props)
+
+	logger.Close()
+
 }
