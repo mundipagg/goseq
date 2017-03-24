@@ -7,9 +7,10 @@ import (
 
 // Logger is the main struct that will be used to create logs
 type Logger struct {
-	DefinedLevel Level
-	background   *Background
-	Properties   properties
+	DefinedLevel      Level
+	background        *Background
+	Properties        properties
+	DefaultProperties properties
 
 	baseURL string
 }
@@ -22,11 +23,21 @@ func GetLogger(url string, apiKey string) (*Logger, error) {
 	}
 
 	return &Logger{
-		baseURL:      url,
-		background:   NewBackground(url, apiKey),
-		DefinedLevel: 0,
-		Properties:   NewProperties(),
+		baseURL:           url,
+		background:        NewBackground(url, apiKey),
+		DefinedLevel:      0,
+		Properties:        NewProperties(),
+		DefaultProperties: NewProperties(),
 	}, nil
+}
+
+//
+func (l *Logger) DefaultProperies(props map[string]string) {
+
+	for key, value := range props {
+
+		l.DefaultProperties.AddProperty(key, value)
+	}
 }
 
 // Close closes the logger background routine
@@ -38,6 +49,10 @@ func (l *Logger) log(lvl Level, message string, props properties) {
 
 	if l.DefinedLevel != VERBOSE && l.DefinedLevel != lvl {
 		return
+	}
+
+	for k, v := range l.DefaultProperties.Property {
+		props.AddProperty(k, v)
 	}
 
 	entry := &Event{

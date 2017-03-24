@@ -96,3 +96,17 @@ func TestLogger_WithAPIKey(t *testing.T) {
 	logger.Close()
 
 }
+
+func TestLogger_DefaultProperties(t *testing.T) {
+
+	logger, _ := GetLogger(baseURL, "")
+
+	logger.DefaultProperies(map[string]string{
+		"Application": "TEST",
+		"Teste":       "TEST",
+	})
+
+	logger.Information("WithDefaultProperties", NewProperties())
+
+	logger.Close()
+}
