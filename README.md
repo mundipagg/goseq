@@ -29,7 +29,7 @@ import (
 func TestLogger_INFORMATION(t *testing.T) {
 
 	// Creates a new logger instance that will be used to send log messages to SEQ API
-	logger := GetLogger("http://localhost:5341")
+	logger := GetLogger("http://localhost:5341", "YOUR_API_KEY")
 
 	// Logs message with INFORMATION log level and empty properties
 	logger.Information("Logging test message", NewProperties())
