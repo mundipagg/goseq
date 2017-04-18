@@ -31,8 +31,8 @@ func GetLogger(url string, apiKey string) (*Logger, error) {
 	}, nil
 }
 
-//
-func (l *Logger) DefaultProperies(props map[string]string) {
+// SetDefaultProperties sets the DefaultProperties variable
+func (l *Logger) SetDefaultProperties(props map[string]string) {
 
 	for key, value := range props {
 

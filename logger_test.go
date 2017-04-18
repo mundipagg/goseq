@@ -101,7 +101,7 @@ func TestLogger_DefaultProperties(t *testing.T) {
 
 	logger, _ := GetLogger(baseURL, "")
 
-	logger.DefaultProperies(map[string]string{
+	logger.SetDefaultProperties(map[string]string{
 		"Application": "TEST",
 		"Teste":       "TEST",
 	})
