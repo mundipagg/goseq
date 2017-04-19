@@ -5,7 +5,7 @@ type Event struct {
 	Timestamp       string
 	Level           string
 	MessageTemplate string
-	Properties      map[string]string
+	Properties      map[string]interface{}
 }
 
 // SeqLog is Event array
@@ -14,16 +14,16 @@ type SeqLog struct {
 }
 
 type properties struct {
-	Property map[string]string
+	Property map[string]interface{}
 }
 
-func (p *properties) AddProperty(key string, value string) {
+func (p *properties) AddProperty(key string, value interface{}) {
 	p.Property[key] = value
 }
 
 // NewProperties creates a new properties struct and creates a new Property Map
 func NewProperties() (p properties) {
 	return properties{
-		Property: make(map[string]string),
+		Property: make(map[string]interface{}),
 	}
 }

@@ -32,7 +32,7 @@ func GetLogger(url string, apiKey string) (*Logger, error) {
 }
 
 // SetDefaultProperties sets the DefaultProperties variable
-func (l *Logger) SetDefaultProperties(props map[string]string) {
+func (l *Logger) SetDefaultProperties(props map[string]interface{}) {
 
 	for key, value := range props {
 
