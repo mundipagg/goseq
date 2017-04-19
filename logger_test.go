@@ -101,12 +101,60 @@ func TestLogger_DefaultProperties(t *testing.T) {
 
 	logger, _ := GetLogger(baseURL, "")
 
-	logger.SetDefaultProperties(map[string]string{
+	logger.SetDefaultProperties(map[string]interface{}{
 		"Application": "TEST",
 		"Teste":       "TEST",
 	})
 
 	logger.Information("WithDefaultProperties", NewProperties())
+
+	logger.Close()
+}
+
+func TestLogger_ObjectOnProperty(t *testing.T) {
+	type todo struct {
+		Description string
+		ID          int
+	}
+	type object struct {
+		Name string
+		Age  int
+		ToDo []todo
+	}
+
+	c := make([]object, 0, 0)
+	c = append(c, object{
+		Age:  22,
+		Name: "Munir",
+		ToDo: []todo{todo{
+			Description: "Some description",
+			ID:          1,
+		}, todo{
+			Description: "Another description",
+			ID:          2,
+		}},
+	})
+
+	c = append(c, object{
+		Age:  28,
+		Name: "Moneda",
+		ToDo: []todo{todo{
+			Description: "Some description",
+			ID:          1,
+		}, todo{
+			Description: "Another description",
+			ID:          2,
+		}},
+	})
+
+	logger, _ := GetLogger(baseURL, "")
+
+	logger.SetDefaultProperties(map[string]interface{}{
+		"Application": "TEST",
+		"Teste":       c,
+	})
+
+	logger.Information("WithObjectProperties", NewProperties())
 
 	logger.Close()
 }
