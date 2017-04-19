@@ -3,6 +3,7 @@ package goseq
 // Level represents the log level
 type Level int
 
+// Log levels
 const (
 	VERBOSE Level = iota
 	DEBUG
