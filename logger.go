@@ -8,31 +8,33 @@ import (
 // Logger is the main struct that will be used to create logs
 type Logger struct {
 	DefinedLevel      Level
-	background        *Background
+	background        []*Background
 	Properties        properties
 	DefaultProperties properties
-
-	baseURL string
+	Channel           chan *Event
+	baseURL           string
 }
 
 // GetLogger create and returns a new Logger struct with a Background struct ready to send log messages
-func GetLogger(url string, apiKey string) (*Logger, error) {
-
+func GetLogger(url string, apiKey string, qtdConsumers int) (*Logger, error) {
 	if len(url) < 1 {
 		return nil, errors.New("Invalid URL")
 	}
+	lg := &Logger{
+		baseURL: url,
 
-	return &Logger{
-		baseURL:           url,
-		background:        NewBackground(url, apiKey),
 		DefinedLevel:      0,
 		Properties:        NewProperties(),
 		DefaultProperties: NewProperties(),
-	}, nil
+	}
+	backs, channel := NewBackground(url, apiKey, qtdConsumers)
+	lg.background = backs
+	lg.Channel = channel
+	return lg, nil
 }
 
-//
-func (l *Logger) DefaultProperies(props map[string]string) {
+// SetDefaultProperties sets the DefaultProperties variable
+func (l *Logger) SetDefaultProperties(props map[string]interface{}) {
 
 	for key, value := range props {
 
@@ -42,7 +44,11 @@ func (l *Logger) DefaultProperies(props map[string]string) {
 
 // Close closes the logger background routine
 func (l *Logger) Close() {
-	l.background.Close()
+	close(l.Channel)
+	for _, back := range l.background {
+		back.Close()
+	}
+
 }
 
 func (l *Logger) log(lvl Level, message string, props properties) {
@@ -61,8 +67,7 @@ func (l *Logger) log(lvl Level, message string, props properties) {
 		Timestamp:       time.Now().Format("2006-01-02T15:04:05"),
 		MessageTemplate: message,
 	}
-
-	l.background.ch <- entry
+	l.Channel <- entry
 
 }
 
