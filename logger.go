@@ -37,7 +37,6 @@ func GetLogger(url string, apiKey string, qtdConsumers int) (*Logger, error) {
 func (l *Logger) SetDefaultProperties(props map[string]interface{}) {
 
 	for key, value := range props {
-
 		l.DefaultProperties.AddProperty(key, value)
 	}
 }

@@ -18,6 +18,9 @@ type Background struct {
 
 // NewBackground creates a new Background structure and creates a new Go Routine for the initBackground function
 func NewBackground(url string, apiKey string, qtdConsumer int) ([]*Background, chan *Event) {
+	if qtdConsumer < 1 {
+		panic("You must configure at least 1 consumer")
+	}
 	var consumers []*Background
 	consumers = make([]*Background, 0, 0)
 	ch := make(chan *Event)
@@ -53,10 +56,10 @@ func (b *Background) initBackground() {
 			Events: []*Event{item},
 		}
 
-		success := client.Send(&seqlog, b.apiKey, _client)
+		err := client.Send(&seqlog, b.apiKey, _client)
 
-		if success != true {
-			log.Fatal("shit went wrong")
+		if err != nil {
+			log.Fatal(err)
 		}
 	}
 }
