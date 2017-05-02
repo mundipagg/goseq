@@ -38,7 +38,7 @@ func newBackground(url string, apiKey string, qtyConsumer int) ([]*background, c
 	return consumers, ch
 }
 
-// Background function that is responsable for sending log messages to the SEQ API
+// Background function that is responsible for sending log messages to the SEQ API
 func (b *background) initBackground() {
 	var client = &seqClient{baseURL: b.url}
 	defer b.wg.Done()
