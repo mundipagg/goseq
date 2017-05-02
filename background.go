@@ -2,57 +2,69 @@ package goseq
 
 import (
 	"log"
+	"net/http"
 	"sync"
+	"time"
 )
 
-// Background represents a background channel that is used to send log messages to the SEQ API
-type Background struct {
-	ch     chan *Event
+// background represents a background channel that is used to send log messages to the SEQ API
+type background struct {
+	ch     chan *event
 	url    string
 	apiKey string
 
 	wg sync.WaitGroup
 }
 
-// NewBackground creates a new Background structure and creates a new Go Routine for the initBackground function
-func NewBackground(url string, apiKey string) *Background {
-
-	var a = &Background{
-		ch:     make(chan *Event),
-		url:    url,
-		apiKey: apiKey,
+// newBackground creates a new Background structure and creates a new Go Routine for the initBackground function
+func newBackground(url string, apiKey string, qtyConsumer int) ([]*background, chan *event) {
+	if qtyConsumer < 1 {
+		qtyConsumer = 1
+	}
+	var consumers []*background
+	consumers = make([]*background, 0, 0)
+	ch := make(chan *event)
+	for i := 0; i < qtyConsumer; i++ {
+		var a = &background{
+			ch:     ch,
+			url:    url,
+			apiKey: apiKey,
+		}
+		consumers = append(consumers, a)
+		a.wg.Add(1)
+		go a.initBackground()
 	}
 
-	a.wg.Add(1)
-
-	go a.initBackground()
-
-	return a
+	return consumers, ch
 }
 
 // Background function that is responsable for sending log messages to the SEQ API
-func (b *Background) initBackground() {
-
-	var client = &SeqClient{BaseURL: b.url}
-
+func (b *background) initBackground() {
+	var client = &seqClient{baseURL: b.url}
 	defer b.wg.Done()
-
-	for item := range b.ch {
-		seqlog := SeqLog{
-			Events: []*Event{item},
+	var _client = &http.Client{
+		Transport: &http.Transport{
+			TLSHandshakeTimeout: 30 * time.Second,
+		},
+	}
+	for {
+		item, ok := <-b.ch
+		if !ok {
+			break
 		}
-		success := client.Send(&seqlog, b.apiKey)
+		seqlog := seqLog{
+			Events: []*event{item},
+		}
 
-		if success != true {
-			log.Fatal("shit went wrong")
+		err := client.send(&seqlog, b.apiKey, _client)
+
+		if err != nil {
+			log.Fatal(err)
 		}
 	}
 }
 
 // Close closes background channel and waits for the end of the go Routine
-func (b *Background) Close() {
-
-	close(b.ch)
-
+func (b *background) close() {
 	b.wg.Wait()
 }

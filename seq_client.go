@@ -3,6 +3,7 @@ package goseq
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 )
@@ -11,15 +12,14 @@ const (
 	endpoint = "/api/events/raw"
 )
 
-// SeqClient holds the Send methods and SEQ BaseURL
-type SeqClient struct {
-	BaseURL string
+// seqClient holds the Send methods and SEQ BaseURL
+type seqClient struct {
+	baseURL string
 }
 
-// Send send POST requests to the SEQ API
-func (sc *SeqClient) Send(event *SeqLog, apiKey string) bool {
-
-	fullURL := sc.BaseURL + endpoint
+// send send POST requests to the SEQ API
+func (sc *seqClient) send(event *seqLog, apiKey string, client *http.Client) error {
+	fullURL := sc.baseURL + endpoint
 
 	serialized, _ := json.Marshal(event)
 
@@ -34,15 +34,16 @@ func (sc *SeqClient) Send(event *SeqLog, apiKey string) bool {
 		log.Fatal(err)
 	}
 
-	client := &http.Client{}
-
 	response, err := client.Do(request)
+	defer request.Body.Close()
+	if err != nil {
 
+		return err
+	}
 	defer response.Body.Close()
 
-	if response.StatusCode == 201 {
-		return true
+	if response.StatusCode != 201 {
+		return errors.New(response.Status)
 	}
-
-	return false
+	return nil
 }

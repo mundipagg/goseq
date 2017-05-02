@@ -1,11 +1,11 @@
 package goseq
 
 // Level represents the log level
-type Level int
+type level int
 
-// Log levels
+//Log level supported by Seq
 const (
-	VERBOSE Level = iota
+	VERBOSE level = iota
 	DEBUG
 	INFORMATION
 	WARNING
@@ -22,6 +22,6 @@ var levelNames = []string{
 	"FATAL",
 }
 
-func (l Level) String() string {
+func (l level) String() string {
 	return levelNames[l]
 }
