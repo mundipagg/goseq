@@ -10,6 +10,7 @@ Added
 
 Changed
 - Changes method name `DefaultProperies` to `SetDefaultProperties`
+- Changes not necessary public variables to private ones
 
 ## 0.1.1 (2017-03-17)
 
