@@ -1,3 +1,5 @@
+[![GoDoc](https://godoc.org/github.com/mundipagg/goseq?status.svg)](https://godoc.org/github.com/mundipagg/goseq)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mundipagg/goseq)](https://goreportcard.com/report/github.com/mundipagg/goseq)
 # Golang logging library for SEQ tool
 
 ## GoSeq

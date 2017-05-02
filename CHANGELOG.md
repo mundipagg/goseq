@@ -1,11 +1,12 @@
 # Changelog
 
-## 1.0.1 (2017-04-19)
+## 0.1.2 (2017-04-30)
 
 Added
+- Adds support to n (n > 0) http Seq consumer at Logger to prevent the application to consume a lot of memory when we have a thousands of requests
+- Change SeqClient.Send return type, from bool to error
+- Assert how many consumers was passed by user to the Logger
 - Added support to complex objects on log, now the properties are of type `string`/`interface{}` instead of `string`/`string`
-
-## 1.0.0 (2017-04-18)
 
 Changed
 - Changes method name `DefaultProperies` to `SetDefaultProperties`
