@@ -126,10 +126,10 @@ func TestLogger_ObjectOnProperty(t *testing.T) {
 	c = append(c, object{
 		Age:  22,
 		Name: "Munir",
-		ToDo: []todo{todo{
+		ToDo: []todo{{
 			Description: "Some description",
 			ID:          1,
-		}, todo{
+		}, {
 			Description: "Another description",
 			ID:          2,
 		}},
@@ -138,10 +138,10 @@ func TestLogger_ObjectOnProperty(t *testing.T) {
 	c = append(c, object{
 		Age:  28,
 		Name: "Moneda",
-		ToDo: []todo{todo{
+		ToDo: []todo{{
 			Description: "Some description",
 			ID:          1,
-		}, todo{
+		}, {
 			Description: "Another description",
 			ID:          2,
 		}},
