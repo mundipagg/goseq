@@ -12,15 +12,14 @@ const (
 	endpoint = "/api/events/raw"
 )
 
-// SeqClient holds the Send methods and SEQ BaseURL
-type SeqClient struct {
-	BaseURL string
+// seqClient holds the Send methods and SEQ BaseURL
+type seqClient struct {
+	baseURL string
 }
 
-// Send send POST requests to the SEQ API
-func (sc *SeqClient) Send(event *SeqLog, apiKey string, client *http.Client) error {
-
-	fullURL := sc.BaseURL + endpoint
+// send send POST requests to the SEQ API
+func (sc *seqClient) send(event *seqLog, apiKey string, client *http.Client) error {
+	fullURL := sc.baseURL + endpoint
 
 	serialized, _ := json.Marshal(event)
 
@@ -34,6 +33,7 @@ func (sc *SeqClient) Send(event *SeqLog, apiKey string, client *http.Client) err
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	response, err := client.Do(request)
 	defer request.Body.Close()
 	if err != nil {

@@ -7,25 +7,25 @@ import (
 	"time"
 )
 
-// Background represents a background channel that is used to send log messages to the SEQ API
-type Background struct {
-	ch     chan *Event
+// background represents a background channel that is used to send log messages to the SEQ API
+type background struct {
+	ch     chan *event
 	url    string
 	apiKey string
 
 	wg sync.WaitGroup
 }
 
-// NewBackground creates a new Background structure and creates a new Go Routine for the initBackground function
-func NewBackground(url string, apiKey string, qtdConsumer int) ([]*Background, chan *Event) {
-	if qtdConsumer < 1 {
-		panic("You must configure at least 1 consumer")
+// newBackground creates a new Background structure and creates a new Go Routine for the initBackground function
+func newBackground(url string, apiKey string, qtyConsumer int) ([]*background, chan *event) {
+	if qtyConsumer < 1 {
+		qtyConsumer = 1
 	}
-	var consumers []*Background
-	consumers = make([]*Background, 0, 0)
-	ch := make(chan *Event)
-	for i := 0; i < qtdConsumer; i++ {
-		var a = &Background{
+	var consumers []*background
+	consumers = make([]*background, 0, 0)
+	ch := make(chan *event)
+	for i := 0; i < qtyConsumer; i++ {
+		var a = &background{
 			ch:     ch,
 			url:    url,
 			apiKey: apiKey,
@@ -39,8 +39,8 @@ func NewBackground(url string, apiKey string, qtdConsumer int) ([]*Background, c
 }
 
 // Background function that is responsable for sending log messages to the SEQ API
-func (b *Background) initBackground() {
-	var client = &SeqClient{BaseURL: b.url}
+func (b *background) initBackground() {
+	var client = &seqClient{baseURL: b.url}
 	defer b.wg.Done()
 	var _client = &http.Client{
 		Transport: &http.Transport{
@@ -52,11 +52,11 @@ func (b *Background) initBackground() {
 		if !ok {
 			break
 		}
-		seqlog := SeqLog{
-			Events: []*Event{item},
+		seqlog := seqLog{
+			Events: []*event{item},
 		}
 
-		err := client.Send(&seqlog, b.apiKey, _client)
+		err := client.send(&seqlog, b.apiKey, _client)
 
 		if err != nil {
 			log.Fatal(err)
@@ -65,7 +65,6 @@ func (b *Background) initBackground() {
 }
 
 // Close closes background channel and waits for the end of the go Routine
-func (b *Background) Close() {
-	//close(b.ch)
+func (b *background) close() {
 	b.wg.Wait()
 }
