@@ -1,7 +1,6 @@
 package goseq
 
 import (
-	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -17,7 +16,7 @@ type background struct {
 }
 
 // newBackground creates a new Background structure and creates a new Go Routine for the initBackground function
-func newBackground(url string, apiKey string, qtyConsumer int) ([]*background, chan *event) {
+func (l *Logger) newBackground(qtyConsumer int) error {
 	if qtyConsumer < 1 {
 		qtyConsumer = 1
 	}
@@ -27,19 +26,31 @@ func newBackground(url string, apiKey string, qtyConsumer int) ([]*background, c
 	for i := 0; i < qtyConsumer; i++ {
 		var a = &background{
 			ch:     ch,
-			url:    url,
-			apiKey: apiKey,
+			url:    l.baseURL,
+			apiKey: l.APIKey,
 		}
 		consumers = append(consumers, a)
 		a.wg.Add(1)
-		go a.initBackground()
-	}
 
-	return consumers, ch
+		l.background = consumers
+		l.channel = ch
+
+		errCh := make(chan error)
+
+		go func() {
+			errCh <- a.initBackground()
+		}()
+
+		select {
+		case err := <-errCh:
+			return err
+		}
+	}
+	return nil
 }
 
 // Background function that is responsible for sending log messages to the SEQ API
-func (b *background) initBackground() {
+func (b *background) initBackground() error {
 	var client = &seqClient{baseURL: b.url}
 	defer b.wg.Done()
 	var _client = &http.Client{
@@ -59,9 +70,10 @@ func (b *background) initBackground() {
 		err := client.send(&seqlog, b.apiKey, _client)
 
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 	}
+	return nil
 }
 
 // Close closes background channel and waits for the end of the go Routine
