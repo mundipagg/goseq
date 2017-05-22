@@ -19,7 +19,7 @@ type Logger struct {
 }
 
 // GetLogger creates and returns a new Logger struct
-func GetLogger(url string, apiKey string) (*Logger, error) {
+func GetLogger(url, apiKey string) (*Logger, error) {
 	l, err := createLogger(url, apiKey, false, 0)
 	return l, err
 }
