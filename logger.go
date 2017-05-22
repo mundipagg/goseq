@@ -18,11 +18,26 @@ type Logger struct {
 	Async             bool
 }
 
-// GetLogger create and returns a new Logger struct with a Background struct ready to send log messages
-func GetLogger(url string, apiKey string, async bool, qtyConsumer int) (*Logger, error) {
+// GetLogger creates and returns a new Logger struct
+func GetLogger(url string, apiKey string) (*Logger, error) {
+	l, err := createLogger(url, apiKey, false, 0)
+	return l, err
+}
+
+// GetAsyncLogger creates and returns a new Logger struct with a Background struct ready to send log messages asynchronously
+func GetAsyncLogger(url, apiKey string, qtyConsumer int) (*Logger, error) {
+	l, err := createLogger(url, apiKey, true, qtyConsumer)
+	return l, err
+}
+
+func createLogger(url, apiKey string, async bool, qtyConsumer int) (*Logger, error) {
 	if len(url) < 1 {
 		return nil, errors.New("Invalid URL")
 	}
+	if len(apiKey) < 1 {
+		return nil, errors.New("Invalid APIKey")
+	}
+
 	log := &Logger{
 		baseURL:           url,
 		APIKey:            apiKey,
