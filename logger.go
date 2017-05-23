@@ -2,6 +2,7 @@ package goseq
 
 import (
 	"errors"
+	"net/http"
 	"time"
 )
 
@@ -13,24 +14,47 @@ type Logger struct {
 	DefaultProperties Properties
 	channel           chan *event
 	baseURL           string
+	APIKey            string
+	Async             bool
 }
 
-// GetLogger create and returns a new Logger struct with a Background struct ready to send log messages
-func GetLogger(url string, apiKey string, qtyConsumer int) (*Logger, error) {
+// GetLogger creates and returns a new Logger struct
+func GetLogger(url, apiKey string) (*Logger, error) {
+	l, err := createLogger(url, apiKey, false, 0)
+	return l, err
+}
+
+// GetAsyncLogger creates and returns a new Logger struct with a Background struct ready to send log messages asynchronously
+func GetAsyncLogger(url, apiKey string, qtyConsumer int) (*Logger, error) {
+	l, err := createLogger(url, apiKey, true, qtyConsumer)
+	return l, err
+}
+
+func createLogger(url, apiKey string, async bool, qtyConsumer int) (*Logger, error) {
 	if len(url) < 1 {
 		return nil, errors.New("Invalid URL")
 	}
-	lg := &Logger{
-		baseURL: url,
+	if len(apiKey) < 1 {
+		return nil, errors.New("Invalid APIKey")
+	}
 
+	log := &Logger{
+		baseURL:           url,
+		APIKey:            apiKey,
+		Async:             async,
 		definedLevel:      0,
 		Properties:        NewProperties(),
 		DefaultProperties: NewProperties(),
 	}
-	backs, channel := newBackground(url, apiKey, qtyConsumer)
-	lg.background = backs
-	lg.channel = channel
-	return lg, nil
+
+	if log.Async {
+		err := log.newBackground(qtyConsumer)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return log, nil
 }
 
 // SetDefaultProperties sets the DefaultProperties variable
@@ -50,10 +74,10 @@ func (l *Logger) Close() {
 
 }
 
-func (l *Logger) log(lvl level, message string, props Properties) {
+func (l *Logger) log(lvl level, message string, props Properties) error {
 
 	if l.definedLevel != VERBOSE && l.definedLevel != lvl {
-		return
+		return errors.New("Invalid log level")
 	}
 
 	for k, v := range l.DefaultProperties.Property {
@@ -66,8 +90,31 @@ func (l *Logger) log(lvl level, message string, props Properties) {
 		Timestamp:       time.Now().Format("2006-01-02T15:04:05"),
 		MessageTemplate: message,
 	}
-	l.channel <- entry
 
+	if l.Async {
+		l.channel <- entry
+	} else {
+
+		seqlog := seqLog{
+			Events: []*event{entry},
+		}
+
+		var httpClient = &http.Client{
+			Transport: &http.Transport{
+				TLSHandshakeTimeout: 30 * time.Second,
+			},
+		}
+
+		var logClient = &seqClient{baseURL: l.baseURL}
+
+		err := logClient.send(&seqlog, l.APIKey, httpClient)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // Debug log messages with DEBUG level

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
 )
 
@@ -31,13 +30,12 @@ func (sc *seqClient) send(event *seqLog, apiKey string, client *http.Client) err
 	}
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	response, err := client.Do(request)
 	defer request.Body.Close()
 	if err != nil {
-
 		return err
 	}
 	defer response.Body.Close()
