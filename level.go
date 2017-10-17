@@ -14,12 +14,12 @@ const (
 )
 
 var levelNames = []string{
-	"VERBOSE",
-	"DEBUG",
-	"INFORMATION",
-	"WARNING",
-	"ERROR",
-	"FATAL",
+	"Verbose",
+	"Debug",
+	"Information",
+	"Warning",
+	"Error",
+	"Fatal",
 }
 
 func (l level) String() string {
