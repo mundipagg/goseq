@@ -5,12 +5,12 @@ type level int
 
 //Log level supported by Seq
 const (
-	VERBOSE level = iota
-	DEBUG
-	INFORMATION
-	WARNING
-	ERROR
-	FATAL
+	Verbose level = iota
+	Debug
+	Information
+	Warning
+	Error
+	Fatal
 )
 
 var levelNames = []string{

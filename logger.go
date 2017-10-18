@@ -76,7 +76,7 @@ func (l *Logger) Close() {
 
 func (l *Logger) log(lvl level, message string, props Properties) error {
 
-	if l.definedLevel != VERBOSE && l.definedLevel != lvl {
+	if l.definedLevel != Verbose && l.definedLevel != lvl {
 		return errors.New("Invalid log level")
 	}
 
@@ -119,25 +119,25 @@ func (l *Logger) log(lvl level, message string, props Properties) error {
 
 // Debug log messages with DEBUG level
 func (l *Logger) Debug(message string, props Properties) {
-	l.log(DEBUG, message, props)
+	l.log(Debug, message, props)
 }
 
 // Error log messages with ERROR level
 func (l *Logger) Error(message string, props Properties) {
-	l.log(ERROR, message, props)
+	l.log(Error, message, props)
 }
 
 // Warning log messages with WARNING level
 func (l *Logger) Warning(message string, props Properties) {
-	l.log(WARNING, message, props)
+	l.log(Warning, message, props)
 }
 
 // Fatal log messages with FATAL level
 func (l *Logger) Fatal(message string, props Properties) {
-	l.log(FATAL, message, props)
+	l.log(Fatal, message, props)
 }
 
 // Information log messages with INFORMATION level
 func (l *Logger) Information(message string, props Properties) {
-	l.log(INFORMATION, message, props)
+	l.log(Information, message, props)
 }

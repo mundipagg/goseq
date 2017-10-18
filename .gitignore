@@ -1,0 +1,8 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea
+.gitignore
+.idea/goseq.iml
+.idea/inspectionProfiles/
+.idea/markdown-navigator/
+.idea/modules.xml
+.idea/workspace.xml
