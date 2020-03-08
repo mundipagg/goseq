@@ -94,7 +94,6 @@ func (l *Logger) log(lvl level, message string, props Properties) error {
 	if l.Async {
 		l.channel <- entry
 	} else {
-
 		seqlog := seqLog{
 			Events: []*event{entry},
 		}

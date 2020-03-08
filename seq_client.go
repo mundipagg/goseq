@@ -24,13 +24,13 @@ func (sc *seqClient) send(event *seqLog, apiKey string, client *http.Client) err
 
 	request, err := http.NewRequest("POST", fullURL, bytes.NewBuffer(serialized))
 
+	if err != nil {
+		return err
+	}
+
 	if len(apiKey) > 1 {
 		request.Header.Set("X-Seq-ApiKey", apiKey)
 		request.Header.Set("Content-Type", "application/json")
-	}
-
-	if err != nil {
-		return err
 	}
 
 	response, err := client.Do(request)
